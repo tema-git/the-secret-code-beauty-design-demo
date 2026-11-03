@@ -18,7 +18,8 @@
     const reduced = wantsReduced();
     document.documentElement.classList.toggle('motion-reduced', reduced);
     motionToggle.setAttribute('aria-pressed', String(reduced));
-    motionToggle.textContent = reduced ? 'Движение уменьшено' : 'Уменьшить движение';
+    motionToggle.textContent = reducedMotion.matches ? 'Движение снижено на устройстве' : reduced ? 'Включить движение' : 'Уменьшить движение';
+    motionToggle.disabled = reducedMotion.matches;
   }
   motionToggle.addEventListener('click', () => {manualReduced = !manualReduced;syncMotion();scheduleScroll();});
   syncMotion();
@@ -30,16 +31,20 @@
   let pointerX = 0;
   let pointerY = 0;
   const bounds = new WeakMap();
+  const scrollProgress = new Float64Array(scenes.length);
   const clamp = value => Math.max(0, Math.min(1, value));
   function updateScroll() {
     frame = 0;
     const height = window.innerHeight;
+    const reduced = wantsReduced();
     for (let i = 0; i < scenes.length; i++) {
       const scene = scenes[i];
       const rect = scene.getBoundingClientRect();
       bounds.set(scene, rect);
-      const progress = wantsReduced() ? 1 : clamp((height - rect.top) / (height * .65 + Math.min(rect.height * .3, 230)));
-      scene.style.setProperty('--scroll', progress.toFixed(3));
+      scrollProgress[i] = reduced ? 1 : clamp((height - rect.top) / (height * .65 + Math.min(rect.height * .3, 230)));
+    }
+    for (let i = 0; i < scenes.length; i++) {
+      scenes[i].style.setProperty('--scroll', scrollProgress[i].toFixed(3));
     }
   }
   function scheduleScroll() {
@@ -54,7 +59,7 @@
   scenes.forEach(scene => {
     scene.addEventListener('pointerenter', () => bounds.set(scene, scene.getBoundingClientRect()));
     scene.addEventListener('pointermove', event => {
-      if (!finePointer.matches || wantsReduced()) return;
+      if (!finePointer.matches || wantsReduced() || event.pointerType === 'touch') return;
       const rect = bounds.get(scene);
       if (!rect) return;
       pointerX = Math.max(-1, Math.min(1, (event.clientX - rect.left) / rect.width * 2 - 1));
@@ -69,7 +74,10 @@
     });
   });
   window.addEventListener('scroll', scheduleScroll, {passive:true});
-  window.addEventListener('resize', () => {scenes.forEach(scene => bounds.set(scene,scene.getBoundingClientRect()));scheduleScroll();}, {passive:true});
+  window.addEventListener('resize', scheduleScroll, {passive:true});
+  window.addEventListener('load', scheduleScroll);
+  window.addEventListener('pageshow', scheduleScroll);
+  document.fonts.ready.then(scheduleScroll);
   reducedMotion.addEventListener('change', () => {
     syncMotion();
     scenes.forEach(scene => {scene.style.setProperty('--px','0');scene.style.setProperty('--py','0');});
@@ -93,7 +101,7 @@
     });
   });
   const serviceField = document.getElementById('service');
-  document.querySelectorAll('[data-book-service]').forEach(link => link.addEventListener('click', () => {serviceField.value=link.dataset.bookService;}));
+  document.querySelectorAll('[data-book-service]').forEach(link => link.addEventListener('click', () => openBooking(link.dataset.bookService)));
 
   const state = {occasion:null,mood:null};
   const status = document.getElementById('choice-status');
@@ -109,16 +117,24 @@
     status.classList.remove('error');
     status.textContent = state.occasion && state.mood ? 'Всё готово. Откройте свою карточку.' : state.occasion ? 'Теперь выберите настроение.' : state.mood ? 'Теперь выберите повод.' : 'Выберите повод и настроение.';
   }
+  function invalidateCode() {
+    codeResult.hidden = true;
+    codeCard.classList.remove('complete');
+    codeCard.style.backgroundColor = '';
+    document.getElementById('code-eyebrow').textContent = 'Новый выбор';
+    document.getElementById('code-title').textContent = 'Новый поворот.';
+    document.getElementById('code-description').textContent = 'Откройте карточку, чтобы увидеть обновлённое настроение.';
+    document.getElementById('code-services').textContent = '';
+    clearAttachedCode();
+  }
   document.querySelectorAll('[data-occasion],[data-mood]').forEach(button => {
     button.addEventListener('click', () => {
       const type = button.dataset.occasion ? 'occasion' : 'mood';
+      if (state[type] === button.dataset[type]) return;
       state[type] = button.dataset[type];
       document.querySelectorAll(`[data-${type}]`).forEach(other => other.setAttribute('aria-pressed',String(other === button)));
       if (!codeResult.hidden) {
-        codeResult.hidden = true;
-        codeCard.classList.remove('complete');
-        document.getElementById('code-title').textContent = 'Новый поворот.';
-        document.getElementById('code-description').textContent = 'Откройте карточку, чтобы увидеть обновлённое настроение.';
+        invalidateCode();
       }
       showChoiceStatus();
     });
@@ -138,6 +154,7 @@
     document.getElementById('code-description').textContent = data.description;
     document.getElementById('code-services').textContent = `Ваши направления: ${data.services}`;
     codeResult.hidden = false;
+    status.classList.remove('error');
     status.textContent = 'Ваш beauty-код готов. Можно обсудить его с мастером или собрать новый.';
     codeCard.focus({preventScroll:true});
     if (window.innerWidth < 801) codeCard.scrollIntoView({behavior:wantsReduced()?'auto':'smooth',block:'center'});
@@ -145,6 +162,7 @@
   });
   document.getElementById('reset-code').addEventListener('click', () => {
     state.occasion = null;state.mood = null;
+    clearAttachedCode();
     document.querySelectorAll('[data-occasion],[data-mood]').forEach(button => button.setAttribute('aria-pressed','false'));
     codeCard.classList.remove('complete');codeCard.style.backgroundColor='';codeResult.hidden=true;
     document.getElementById('code-eyebrow').textContent='Место для вашего настроения';
@@ -152,34 +170,66 @@
     document.getElementById('code-description').textContent='Один маленький выбор может стать началом нового образа.';
     showChoiceStatus();document.querySelector('[data-occasion]').focus();scheduleScroll();
   });
-  document.getElementById('use-code').addEventListener('click', () => {serviceField.value=state.mood==='calm'?'SPA и уход':'Хочу обсудить образ';});
+  document.getElementById('use-code').addEventListener('click', () => {
+    if (codeResult.hidden || !state.occasion || !state.mood) return;
+    openBooking(state.mood === 'calm' ? 'SPA и уход' : 'Хочу обсудить образ', `${labels[state.occasion]} / ${labels[state.mood]} — ${codeData[state.mood].title}`);
+  });
 
   const form = document.getElementById('booking-form');
   const nameField = document.getElementById('name');
   const phoneField = document.getElementById('phone');
   const success = document.getElementById('booking-success');
+  const selectedCode = document.getElementById('selected-code');
+  let codeAttached = false;
   function setError(field,message) {
     field.setAttribute('aria-invalid',String(Boolean(message)));
     document.getElementById(`${field.id}-error`).textContent=message;
   }
+  function clearAttachedCode() {
+    if (codeAttached) serviceField.value = 'Хочу обсудить образ';
+    codeAttached = false;
+    selectedCode.textContent = '';
+    selectedCode.hidden = true;
+  }
+  function openBooking(service, summary = '') {
+    if (form.hidden) form.reset();
+    form.hidden = false;
+    success.hidden = true;
+    setError(nameField, '');
+    setError(phoneField, '');
+    document.getElementById('form-feedback').textContent = '';
+    serviceField.value = service;
+    codeAttached = Boolean(summary);
+    selectedCode.textContent = summary ? `Ваш beauty-код: ${summary}` : '';
+    selectedCode.hidden = !summary;
+    scheduleScroll();
+  }
+  serviceField.addEventListener('change', () => {
+    codeAttached = false;
+    selectedCode.textContent = '';
+    selectedCode.hidden = true;
+  });
   [nameField,phoneField].forEach(field => field.addEventListener('input', () => {setError(field,'');document.getElementById('form-feedback').textContent='';}));
   form.addEventListener('submit', event => {
     event.preventDefault();
-    const nameValid = nameField.value.trim().length >= 2 && /[A-Za-zА-Яа-яЁё]/.test(nameField.value);
-    const digits = phoneField.value.replace(/\D/g,'');
-    const phoneValid = digits.length >= 10 && digits.length <= 15 && /^[+\d\s()\-]+$/.test(phoneField.value);
-    setError(nameField,nameValid?'':'Введите имя — минимум 2 символа.');
-    setError(phoneField,phoneValid?'':'Введите телефон: от 10 до 15 цифр.');
+    const name = nameField.value.trim();
+    const nameValid = (name.match(/\p{L}/gu) || []).length >= 2 && /^[\p{L}\p{M}\s'’\-]+$/u.test(name);
+    const phone = phoneField.value.trim();
+    const digits = phone.replace(/\D/g,'');
+    const phoneValid = digits.length >= 10 && digits.length <= 15 && /^\+?[\d\s()\-]+$/.test(phone);
+    setError(nameField,nameValid?'':'Введите имя: минимум 2 буквы; допустимы пробелы, апостроф и дефис.');
+    setError(phoneField,phoneValid?'':'Введите 10–15 цифр; знак + допустим только в начале.');
     if (!nameValid || !phoneValid) {
       document.getElementById('form-feedback').textContent='Проверьте отмеченные поля.';
       (!nameValid?nameField:phoneField).focus();return;
     }
     form.reset();
+    clearAttachedCode();
     document.getElementById('form-feedback').textContent='';
     form.hidden=true;success.hidden=false;success.focus({preventScroll:true});scheduleScroll();
   });
   document.getElementById('booking-reset').addEventListener('click', () => {
-    form.reset();form.hidden=false;success.hidden=true;setError(nameField,'');setError(phoneField,'');nameField.focus();scheduleScroll();
+    form.reset();clearAttachedCode();form.hidden=false;success.hidden=true;setError(nameField,'');setError(phoneField,'');document.getElementById('form-feedback').textContent='';nameField.focus();scheduleScroll();
   });
-  window.addEventListener('pagehide', () => {cancelAnimationFrame(frame);cancelAnimationFrame(pointerFrame);form.reset();});
+  window.addEventListener('pagehide', () => {cancelAnimationFrame(frame);cancelAnimationFrame(pointerFrame);frame=0;pointerFrame=0;pendingScene=null;form.reset();clearAttachedCode();});
 })();

@@ -15,3 +15,6 @@
 .code-card ::selection,.mood-section ::selection{color:#ffcf31;background:transparent}.booking-panel ::selection{color:#a8215e;background:transparent}.button::selection,.button *::selection{color:#8a154b;background:transparent}.button.plum::selection,.button.plum *::selection{color:#ffcf31;background:transparent}.motion-toggle{font-size:16px}
 .code-result .reset-link{font-size:16px}.hero-ribbons,.ribbon-line,.service-orbit,.contact-orbits,.code-orb,.visit-line{pointer-events:none}
 .choice[aria-pressed="true"]::selection{color:#ffcf31;background:transparent;text-shadow:none}.motion-toggle[aria-pressed="true"]::selection{color:#8a154b;background:transparent;text-shadow:none}
+
+/* Audit: explicit result focus and a durable handoff from the beauty-code tool. */
+a,button,input,select,[tabindex]{scroll-margin-top:calc(var(--header) + 24px);scroll-margin-bottom:24px}input,select{scroll-margin-top:calc(var(--header) + 56px)}button,a,input,select{touch-action:manipulation}.code-card:focus-visible,.booking-success:focus-visible{outline:3px solid #c75b8c;outline-offset:6px}.selected-code{margin-top:18px;padding:14px 16px;border-left:3px solid var(--wine);background:#edd4df;font-size:16px;line-height:1.5}.motion-toggle:disabled{cursor:default;opacity:.8}.hero-copy,.intro-copy,.service-list,.ritual-controls,.contact-copy,.booking-panel{min-width:0}
