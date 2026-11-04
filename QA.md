@@ -33,3 +33,9 @@ Limits: mobile checks use resized browser viewports, not physical iOS/Android ha
 - Planner `#ritual`, `input[name=occasion]`, `input[name=budget]`, `input[name=priority]`, `#reveal-plan`, `#plan-result`, `#use-plan`, `#reset-plan`
 - Form `#booking-form`, `#name`, `#phone`, `#service-trigger`, `#service-listbox [role=option]`, `#selected-plan`, `#booking-success`, `#booking-reset`
 - Header `.magnetic-contact` (stable hitbox), `.magnetic-visual` (bounded visual)
+
+## Heading and long-copy regression — 2026-11-04
+
+- The publishing agent tested the actual content and a server-only longer-brand/heading fixture at widths 320, 390, 620, 621, 768, 800, 801, 1024, 1050, 1051 and 1440px. All passed with no horizontal overflow; `.hero h1` retained unitless leading 1.12 and no transform. No fixture wording is shipped.
+- The long header's Contacts anchor landed at 139px while the sticky header bottom was 116.6px, leaving the target visible. Header minima remain 88/76px; actual rendered height is measured, including the approximately 79.4px normal mobile case.
+- Final static review passed: one hero leading across breakpoint overrides, emergency wrapping, independent header minimum and measured offset, unchanged company text, no change to planner/contact behavior, JavaScript syntax and `git diff --check`. Local WOFF2 metrics and a portable source guard are documented in `TYPOGRAPHY.md`.

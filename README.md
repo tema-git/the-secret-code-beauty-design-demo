@@ -25,3 +25,5 @@ Buildless HTML/CSS/JavaScript for GitHub Pages. Serve this directory through any
 - Real tel/mail/map links match researched contacts. No real message or booking is sent by the form.
 
 Design decisions and exact references: `DESIGN.md`. Provenance: `assets/provenance.json`. Business research: `research.json`. Current verification: `QA.md`.
+
+For future copies with longer branding or headlines, follow `TYPOGRAPHY.md`: preserve comfortable unitless leading, allow real wrapping, and measure an auto-height sticky header. It includes the actual local-font diagnosis and a small source guard; no brand replacement is built into the fix.
