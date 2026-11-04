@@ -1,39 +1,45 @@
-# The Secret Code — visual direction
+# The Secret Code — revised design system
 
-An independent Russian-language design concept for a real multi-service beauty salon from the user's no-site list. The visitor can explore services, create a beauty mood card, and contact the salon. The form is a clearly labelled local demo. Do not convert it to a real booking claim without a backend and the owner's agreement.
+Independent Russian-language concept for the real salon. Five substantive sections: hero, compact introduction, three service directions, personal visit planner, contacts and demo booking. Deep wine, rose metal, glass and silk are the visual language. All visible artwork is original inline SVG; no photographs, raster motion, video, imported component code or external runtime.
 
-## Visual plan and review
+## Visual direction
 
-Deep wine beauty editorial, asymmetrical portrait, sculptural rose orbits and silk-like vector ribbons. One large portrait is a fictional campaign mood, not a portfolio. Typography leads the page: Cormorant Garamond for expressive Russian headlines and Manrope for legible controls.
+- Palette: plum `#351528`, wine `#54213c`, rose `#f1a9c7`, pale paper `#f9eef1`. Rose is the primary action on wine; plum is the primary action on paper. Selection changes letters only: berry on light surfaces and pale rose on dark surfaces, with transparent background and no shadow.
+- Cormorant Garamond provides expressive Cyrillic headlines; Manrope provides body text and controls. Body 18px, controls 16px minimum, secondary copy 14px. The tiny wordmark subline is part of the brand lockup, not navigation or content.
+- Hero artwork: an oval mirror with a sculpted rose-metal edge, reflective glass, a folded silk ribbon, translucent perfume bottle and pearls. Material comes from layered vector gradients and strokes. Separate groups respond to scroll and pointer movement.
+- Compact introduction: a ribbon threads through an integrated mirror ring, with no framed image or arbitrary card. Less vertical space and short purposeful copy.
+- Distinct service art: individual glossy hair strands and comb; eye, eyebrow hairs and brush; glass dropper, layered stones and steam paths. Switching directions transitions both the scene and its relevant copy.
+- The former mood card, photo interlude and generic process section are replaced by one useful visit planner. No section-count padding, fake masters, reviews, prices or appointment availability.
 
-Initial default cream/serif direction was rejected in favour of a wine/pink fashion campaign. Photography and ribbon geometry carry personality. No fake stats, placeholder team or fabricated reviews.
+## References inspected in the shared design pass — 2026-11-04
 
-Palette: plum `#351528`, wine `#54213c`, rose `#f1a9c7`, paper pink `#f9eef1`, text `#3c1f30`, secondary `#775b69`. Bright rose is the primary action on dark surfaces; wine is the action on pale sections. Body 18px; controls 16px; minor text minimum 14px. Desktop section padding 112px, mobile 65–78px; fluid headlines. Rounded CTA, arched portraits and unboxed content contrast with the rectangular configurator.
+- https://styles.refero.design/style/cdc4a162-cefa-49a1-81e7-4857e421ae24 — Adam Lippes: editorial hierarchy and large focal objects. Adapted to Cyrillic scale and the existing wine palette, without copying photographic assets or small labels.
+- https://styles.refero.design/style/efd8dda0-b7dc-4b0b-b65f-348849d2cd65 — Glossier: product-sized objects, confident spacing and clear service/product emphasis. Interpreted through original material illustrations.
+- https://21st.dev/@mohammadshehadeh/components/magnetic-button and https://mcp.21st.dev/blog/react-magnetic-cursor-effects — public descriptions informed bounded magnetism and spring-back. The live preview timed out; no component source was imported or claimed tested. Original vanilla implementation: fixed anchor hitbox and an inner visual moving at most 5px horizontally / 4px vertically.
+- https://motionsites.ai/lesson/build-scroll-animated-website-with-ai — independent text/art layers and native scroll mapped to progress. Adapted to real SVG geometry, separate object travel and path drawing; no video, image sequence or tiny-type prompt copied.
+- https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-select-only/ — accessible select-only combobox model. DOM focus stays on the trigger; arrows/Home/End/typeahead highlight; Enter/Space/Tab commit; Escape/outside cancel. Active options stay visible.
 
-## References inspected on 2026-11-04
-
-- https://styles.refero.design/style/cdc4a162-cefa-49a1-81e7-4857e421ae24 — Adam Lippes: editorial image proportions, restrained layout framing, photographic composition. Deliberately replaced monochrome/small labels with rose actions and readable Cyrillic type per user requirements.
-- https://21st.dev/@manuarora700/components/card-spotlight — public component description, usage and MIT metadata read. Spotlight's input→light relationship inspired an original vanilla CSS/JS light field over imagery. No gated component code copied, no React dependency; imported component behavior is not claimed tested.
-- https://motionsites.ai/lesson/build-scroll-animated-website-with-ai — scroll-as-progress and separate text/art layers. Adapted to original lightweight SVG ribbon drawing, orbit assembly and photo transforms; no source video, image sequence or paid prompt used.
+Local skills applied: source-guided-web-design, frontend-design, motion best practices. These references guide original implementation; the user's twelve site requirements and latest revision brief take precedence.
 
 ## Motion map
 
-| Section | Input | Visible response | Bounds / alternative |
+| Section | Input | Response | Usability bounds |
 | --- | --- | --- | --- |
-| Hero | Pointer and native scroll | Portrait light changes, offset outline, three long SVG ribbons draw, portrait scales | Decorative layers only; links stay fixed. Mobile uses native scroll. |
-| About | Early section entry, pointer | Still-life enters from -115px with -11° rotation, vector ribbon draws, light movement | Smaller 40px mobile travel; text always visible. |
-| Services | Scroll, pointer, click/focus | Two ellipses assemble from opposite sides (±90px), portrait converges, service detail opens and art treatment changes | All headings are native buttons, targets stationary. |
-| Beauty code | Scroll, pointer, button choices | Sphere and orbital rings assemble from ±100px, selection changes palette and result card | Native buttons, aria-pressed and focus result; tap and keyboard fully supported. |
-| Editorial interlude | Scroll, pointer | Portrait zooms 1.35→1.05; large type moves from the side; bounded parallax | No text content hidden; motion reduced to final composition. |
-| Visit | Early section entry, pointer | Line draws across three steps; numbered markers converge from 55/85/115px | Vertical line and smaller composition on mobile. |
-| Contacts | Scroll and pointer | Large orbit curves assemble behind the contact copy | Form and all contact actions remain stationary. |
+| Hero | Early reversible scroll, pointer | Mirror, silk, flacon and pearls converge from separated positions, up to 130px; reflected glint follows pointer; outer line draws | Text and CTA never move. Mobile uses smaller travel. |
+| Introduction | Early scroll, pointer | Ring rotates from 25° and moves 100px; ribbon enters from the opposite side; thread draws | Short integrated composition, copy fixed. |
+| Services | Scroll, pointer, service selection | Hair/comb, eye/brush, bottle/stones assemble separately; distinct scene crossfade and 55px switch movement | Accordion buttons stay fixed on hover; selection uses native buttons. |
+| Planner | Scroll, pointer, native radio changes | Orbital lines converge from opposite sides; dial rotates and fills from 0/3 to 3/3; preview updates immediately | The paper card, controls and result actions are stable. |
+| Contacts | Scroll, pointer | Rose rings converge behind contact copy within a clipped decorative container | Fields, focus outlines, dropdown and contact actions are not clipped or transformed. |
+| Header | Fine pointer | Inner Contacts pill moves at most 5/4px and returns on leave/focus | Anchor box stationary; touch and system reduced motion disable displacement. |
 
-Progress starts when the section top first enters the bottom of the viewport; it does not wait for full visibility or pinning. Progress is reversible and follows native scrolling. Frame work is scheduled on input, not an endless loop. Pointer coordinates use section bounds cached on enter/resize. There is no custom cursor.
+Progress begins when a section enters the viewport, remains visible throughout, and reverses with native scrolling. Rendering is scheduled from input events; no endless animation loop. Pointer geometry is cached per section. The thematic mirror cursor appears only on nontext visual zones. Text, controls, links and fields retain normal cursors. Reduced motion follows the operating system only; there is no manual toggle or persisted option.
 
-## User requirements
+## Useful interactive flow
 
-Sticky header including mobile, always-visible accented Contacts, SVG arrows diagonal up-right to right on hover/focus. Text selection uses transparent background and contrasting letter colour. Reduced motion respects OS settings and a footer switch. No auto-play or video. No tracking or localStorage; personal form values are cleared on success, reset and pagehide. A demo message and image provenance label are visible.
+1. Choose occasion, available time and primary direction. Native radio groups support mouse, touch and keyboard; a live preview reflects each choice.
+2. Generate a plan: a tailored focus, practical time constraint, and concrete preparation. All 27 combinations produce a coherent recommendation. Time is the visitor's budget, never a promised service duration.
+3. Transfer the complete brief and selected direction to the demo form. Changing a planner choice invalidates an old result and any attached brief. Choosing a different service clears the old brief; confirming the same service retains it.
+4. Reset clears the choices, result, attached brief and attached service. The first choice receives focus.
+5. The demo form requires a valid name, phone and direction; shows useful errors, focuses the first invalid field, clears personal values after success, and supports repeat. No network request or personal-data storage is made.
 
-## Interactive scenario
-
-Select one occasion and one mood → click Show my code → receive a named mood, description and relevant service directions → discuss with master or reset. Incomplete choices give an explicit message and focus the missing group. Rapid repeats remain deterministic. Booking validates name and phone, then clears values and shows a truthful demo success; user can restart.
+The branded dropdown is a single accessible combobox, backed by a hidden select. Its fixed menu stays within the viewport, closes when the trigger leaves the usable area, and does not cover the sticky header. Contact details are from the existing verified research; demo status remains explicit. Footer credit is plain text: “Сайт создан Spoki Studio”.

@@ -1,30 +1,26 @@
 {
-  "beauty-editorial.jpg": {
-    "type": "AI-generated original",
-    "tool": "built-in image_gen",
-    "date": "2026-11-04",
-    "source": "exec-64248493-b722-43d8-93d6-1f697a649a36.png",
-    "prompt": "Premium editorial beauty photograph: adult woman, sleek chestnut hair, natural skin texture, subtle makeup, burgundy lipstick, gold sculptural earrings, hand touching jaw, 4:5 portrait on deep aubergine wine background, dusty blush, cinematic studio light, no text/logo. Fictional model; not real salon work.",
-    "usage": "Hero, service crop, mood image; static JPEG."
-  },
-  "ritual-still-life.jpg": {
-    "type": "AI-generated original",
-    "tool": "built-in image_gen",
-    "date": "2026-11-04",
-    "source": "exec-d5ffec76-c434-4030-bccb-b2d2985d8e20.png",
-    "prompt": "Premium editorial still-life: burgundy silk ribbon on pale dusty pink tabletop, sculptural dark-plum unlabelled perfume bottle, gold oval hand mirror reflecting pink light, burgundy calla lily, dramatic side light, 3:2 horizontal, no text/logo/people.",
-    "usage": "Intro imagery; static JPEG."
+  "artwork": {
+    "type": "Original inline SVG authored for this concept",
+    "location": "index.html; fine strand, comb and brush geometry generated once in app.js",
+    "scenes": [
+      "Rose-metal mirror, silk, glass perfume flacon and pearls",
+      "Integrated mirror ring and silk ribbon",
+      "Hair strands and comb",
+      "Eye, eyebrow hairs and brow brush",
+      "Dropper flacon, stones and steam"
+    ],
+    "media": "No raster photo, video, GIF, sprite or frame sequence is displayed."
   },
   "fonts": {
     "names": [
       "Cormorant Garamond",
       "Manrope"
     ],
-    "source": "Google Fonts, reused licensed local copies from sites/nalog-profi/public/fonts",
+    "source": "Google Fonts; licensed local copies",
     "licenses": [
       "assets/OFL-cormorant.txt",
       "assets/OFL-manrope.txt"
     ]
   },
-  "motion": "All motion is original CSS, JavaScript and SVG; no videos, animated raster assets, GIFs, sprites or image sequences."
+  "motion": "Original CSS transforms, transitions and SVG paths, driven by native scroll and pointer input; OS reduced motion only."
 }
